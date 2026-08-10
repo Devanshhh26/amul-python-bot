@@ -18,7 +18,7 @@ def notify_and_update_products():
                 if not pincode:
                     print(f"Subscription for user {user_id} missing pincode, skipping.")
                     continue
-                products = get_products(pincode=pincode)
+                products = get_products()
                 product = next((p for p in products if p.get("alias") == alias), None)
                 if not product:
                     print(f"No product found for alias {alias} in pincode {pincode}.")
