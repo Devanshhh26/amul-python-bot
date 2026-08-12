@@ -1,7 +1,7 @@
 # fetch_cookie_and_update.py
 """
-This script fetches fresh cookies and API URL/headers for multiple pincodes from the Amul website using Selenium, and writes them to a GitHub Gist as a mapping.
-Run this script every 2 hours (e.g., on Render, GitHub Actions, or your local machine).
+This script fetches fresh cookies and API URL/headers for pincode 201012 from the Amul website using Selenium, and writes them to a GitHub Gist.
+Run this script periodically (e.g., via GitHub Actions).
 """
 import json
 import os
@@ -80,18 +80,11 @@ def fetch_headers_for_pincode(pincode):
     finally:
         driver.quit()
 
-# Main function to loop over pincodes and update Gist
+# Main function to run only for 201012 and update Gist
 def main():
-    # Load pincodes from pincodes.txt
-    all_pincodes = []
-    try:
-        with open("pincodes.txt", "r", encoding="utf-8") as f:
-            for line in f:
-                pc = line.strip()
-                if pc.isdigit() and len(pc) == 6:
-                    all_pincodes.append(pc)
-    except Exception as e:
-        print(f"Could not read pincodes.txt: {e}")
+    # Only fetch headers for pincode 201012
+    all_pincodes = ["201012"]
+    
     # Try to load current Gist content
     result = {}
     try:
@@ -104,6 +97,7 @@ def main():
             result = json.loads(file_content)
     except Exception as e:
         print(f"Could not load current Gist content: {e}")
+
     for pincode in all_pincodes:
         print(f"Fetching headers for pincode {pincode}...")
         data = fetch_headers_for_pincode(pincode)
@@ -112,6 +106,7 @@ def main():
             json_content = json.dumps(result, ensure_ascii=False, indent=2)
             update_gist(json_content)
             print(f"Updated Gist with data for pincode {pincode}.")
+
     if not result:
         print("No data fetched for any pincode.")
 
